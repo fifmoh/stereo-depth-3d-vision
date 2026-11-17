@@ -18,12 +18,6 @@ outputs/
 *.npy
 *.pfm
 
-# Report build intermediates (keep docs/RAPPORT.md and docs/RAPPORT.pdf)
-docs/*.aux
-docs/*.log
-docs/*.toc
-docs/*.out
-
 # OS / editor
 .DS_Store
 .idea/

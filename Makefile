@@ -4,7 +4,7 @@ BIN := $(VENV)/bin
 SCENES := Adirondack Backpack Bicycle1
 SCENES_RECT := Adirondack Backpack
 
-.PHONY: help venv install data data-full test demo demo-live pdf lint clean
+.PHONY: help venv install data data-full test demo demo-live lint clean
 
 help:
 	@echo "make install   create .venv and install requirements"
@@ -12,7 +12,6 @@ help:
 	@echo "make data-full download every split (~700 MB)"
 	@echo "make test      run the pytest suite (offline smoke test included)"
 	@echo "make demo      offline demo on skimage.data.stereo_motorcycle()"
-	@echo "make pdf       build docs/RAPPORT.pdf from docs/RAPPORT.md (pandoc + tectonic)"
 	@echo "make clean     remove caches and generated outputs"
 
 venv:
@@ -39,11 +38,6 @@ demo:
 
 demo-live:
 	PYTHONPATH=src $(BIN)/python demo/live_demo.py
-
-pdf:
-	pandoc docs/RAPPORT.md -o docs/RAPPORT.pdf \
-	  --pdf-engine=tectonic --toc --number-sections \
-	  --resource-path=docs -V lang=fr -V geometry:margin=2.5cm
 
 lint:
 	$(BIN)/python -m compileall -q src scripts tests

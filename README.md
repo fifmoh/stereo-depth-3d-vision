@@ -1,34 +1,29 @@
-# Stereo Depth → 3D Vision (CPU only)
+# Stereo Depth → 3D Vision
 
 Classical stereo vision pipeline: **rectification → block matching → triangulation → 3D
-points and object distances**. No GPU, no neural network, no dataset account.
-
-This is the implementation of *Sujet 23 — Introduction to Depth Estimation and 3D Vision*
-from the course brief, built as a reproducible pipeline rather than a notebook.
+points and object distances**. Runs on CPU with OpenCV only: no GPU, no neural network.
 
 > Status: **M0 (scaffold + data access) complete.** Roadmap below.
 
-## Why not Kaggle
+## Datasets
 
-The brief suggested *Middlebury Stereo / KITTI Stereo (Kaggle)*. Both are available from
-their original sources over plain HTTP, with **no login, no API key, no gated form** —
-which is also the only way to get the accompanying `calib.txt` geometry:
+Downloaded at runtime by `scripts/fetch_data.py` (runtime data is gitignored).
 
-| Dataset | Access | Size |
+| Dataset | Size | Use |
 |---|---|---|
-| **Middlebury Stereo 2014** (primary) | direct per-scene directory | ~58 MB/scene |
-| Middlebury Stereo 2005 (tutorial) | direct `ALL-2views.zip` | 5 MB |
-| KITTI Scene Flow / Stereo 2012 | direct S3 zip | 1.7 / 2.0 GB |
-| `skimage.data.stereo_motorcycle()` | already local | 0 MB |
+| **Middlebury Stereo 2014** | ~58 MB/scene | primary: dense ground-truth disparity + `calib.txt` geometry |
+| Middlebury Stereo 2005 | 5 MB | small tutorial set |
+| `skimage.data.stereo_motorcycle()` | 0 MB | offline smoke test (ships with scikit-image) |
 
-Each Middlebury scene ships `im0.png`, `im1.png`, `disp0.pfm`, `disp1.pfm` and
-`calib.txt` (focal length in pixels, metric baseline, and the disparity offset `doffs`).
-
+Each 2014 scene directory contains `im0.png`, `im1.png`, `disp0.pfm`, `disp1.pfm` and
+`calib.txt` (focal length in pixels, metric baseline in mm, disparity offset `doffs`).
 Two variants are published per scene:
 
 - `-perfect` — correctly rectified (`dyavg = 0`), used to evaluate depth quality;
-- `-imperfect` — deliberately mis-rectified (`dyavg ≈ 0.45 … 0.92 px`, `dymax` up to
-  2.7 px), used to *demonstrate* the rectification stage on real data.
+- `-imperfect` — deliberately mis-rectified (`dyavg ≈ 0.45 … 0.92 px`), used to exercise
+  the rectification stage on real data.
+
+A KITTI adapter (`io_kitti.py`) is on the roadmap; the KITTI zips are also plain HTTP.
 
 ## Install
 
@@ -108,11 +103,10 @@ Depth sanity check on `Adirondack-perfect` at half resolution (SGBM, `blockSize=
 
 ```
 src/stereo_depth/     pipeline modules (config, io, preprocess, matcher, depth, objects)
-scripts/fetch_data.py resumable downloader with sha256 manifest (no auth)
+scripts/fetch_data.py resumable downloader with sha256 manifest
 tests/                unit tests + offline smoke test
 notebooks/            exploration and results analysis
 demo/                 live OpenCV demo with parameter sliders
-docs/                 French report (RAPPORT.md → RAPPORT.pdf)
 ```
 
 ## Evaluation protocol
@@ -131,13 +125,13 @@ relative error per distance band, and FPS on CPU.
 
 ## Roadmap
 
-- [x] **M0** scaffold, dataset access, offline smoke test
-- [ ] **M1** rectification: `dy` estimator + corrective ECC/Hough rectification, checkerboard calibration
+- [x] **M0** scaffold, dataset access, phase-1 alignment estimator, offline smoke test
+- [ ] **M1** corrective rectification (ECC / homography) + checkerboard calibration
 - [ ] **M2** `StereoBM` vs `StereoSGBM` + post-filters (LRC, speckle, optional WLS)
 - [ ] **M3** triangulation, PLY export, closed-form vs `reprojectImageTo3D` agreement
 - [ ] **M4** parameter grid search, best config frozen in `config.py`
-- [ ] **M5** object distances, evaluation report, KITTI adapter
-- [ ] **M6** live demo, French report (PDF), final results
+- [ ] **M5** object distances, BP-2.0 evaluation, KITTI adapter
+- [ ] **M6** live demo, final benchmark table
 
 ## Attribution
 
