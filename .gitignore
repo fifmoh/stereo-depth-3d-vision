@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Datasets (re-downloadable, never committed)
+data/raw/
+data/processed/
+data/manifest.json
+
+# Generated artefacts
+outputs/
+*.ply
+*.npy
+*.pfm
+
+# Report build intermediates (keep docs/RAPPORT.md and docs/RAPPORT.pdf)
+docs/*.aux
+docs/*.log
+docs/*.toc
+docs/*.out
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

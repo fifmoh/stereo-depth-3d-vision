@@ -1,0 +1,10 @@
+# CPU-only classical stereo pipeline (Sujet 23).
+# opencv-contrib-python (not opencv-python) is required for cv2.ximgproc (WLS filter).
+numpy>=1.24
+opencv-contrib-python>=4.9
+scikit-image>=0.22
+matplotlib>=3.7
+tqdm>=4.66
+
+# dev / tests
+pytest>=7.4
